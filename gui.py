@@ -34,7 +34,7 @@ def clear_document():
 # Create the main application window
 root = tk.Tk()
 root.title("Reversible Tokenization Tool")
-root.geometry("300x200")  # Width x Height
+root.geometry("900x550")  # Width x Height
 
 
 # main frame
