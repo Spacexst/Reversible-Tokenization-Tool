@@ -7,15 +7,15 @@ import os
 def run_tokenize():
     path = file_label.cget("text")
 
-    if os.path.exists():
+    if os.path.exists(path):
         output_file = pii_tokenizer.tokenize_file(path)
-        status_label.config(Text=f"Tokenization complete: {output_file}")
-        os.startfile(out_file)
+        status_label.config(text=f"Tokenization complete: {output_file}")
+        os.startfile(output_file)
     else:
         status_label.config(text="No file selected")
 
-
 # button functions
+
 
 def select_file():
     path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
@@ -25,17 +25,21 @@ def select_file():
 
 
 def protect_info():
-    status_label.config("Protect Personal Information clicked")
+    status_label.config(text="Protect Personal Information clicked")
 
 
 def run_tokenize():
+
     path = file_label.cget("text")
+
     if os.path.exists(path):
         output_file = pii_tokenizer.tokenize_file(path)
-        status_label.config(Text=f"Tokenization complete: {output_file}")
 
- # opens the file automatically
+        status_label.config(text=f"Tokenization complete: {output_file}")
+
+        # open the tokenized file automatically
         os.startfile(output_file)
+
     else:
         status_label.config(text="No file selected")
 
@@ -45,18 +49,18 @@ def ask_ai():
 
 
 def clear_document():
-    file_label.config(text="<Path of the file selected>")
+    file_label.config(text="<Path of selected file>")
     status_label.config(text="Document cleared")
 
 
-# main window-this is the main application window
+# main window
+# Create the main application window
 root = tk.Tk()
 root.title("Reversible Tokenization Tool")
-root.geometry("950x600")  # widthx height
+root.geometry("900x550")  # Width x Height
 
 
 # main frame
-
 main_frame = tk.Frame(root, bg="#f2f2f2", padx=20, pady=20)
 main_frame.pack(fill="both", expand=True)
 
@@ -75,12 +79,15 @@ select_button = tk.Button(
 )
 select_button.pack(pady=5)
 
+
 file_label = tk.Label(
     main_frame,
-    text="Path of the selected file",
+    text="<Path of selected file>",
+    width=30,
     relief="sunken"
 )
 file_label.pack(pady=5)
+
 
 protect_button = tk.Button(
     main_frame,
@@ -89,7 +96,6 @@ protect_button = tk.Button(
     command=protect_info
 )
 protect_button.pack(pady=10)
-
 
 tokenize_button = tk.Button(
     main_frame,
@@ -117,13 +123,13 @@ clear_button = tk.Button(
 )
 clear_button.pack(pady=5)
 
+
 status_label = tk.Label(
     main_frame,
     text="Status Bar",
     relief="sunken",
     anchor="w"
 )
-
 status_label.pack(side="bottom", fill="x", pady=20)
 
 
