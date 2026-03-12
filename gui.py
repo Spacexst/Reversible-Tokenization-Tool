@@ -25,7 +25,7 @@ def select_file():
 
 
 def protect_info():
-    status_label.config("Protect Personal Information clicked")
+    status_label.config(text="Protect Personal Information clicked")
 
 
 def run_tokenize():
@@ -33,6 +33,19 @@ def run_tokenize():
     if os.path.exists(path):
         output_file = pii_tokenizer.tokenize_file(path)
         status_label.config(Text=f"Tokenization complete: {output_file}")
+
+ # opens the file automatically
+        os.startfile(output_file)
+    else:
+        status_label.config(text="No file selected")
+
+
+def run_detokenize():
+    path = file_label.cget("text")
+    if os.path.exists(path):
+        output_file = pii_tokenizer.detokenize_file(path)
+        status_label.config(Text=f"Detokenization complete: {output_file}")
+        messagebox.showinfo("Success", "Detokenization completed")
 
  # opens the file automatically
         os.startfile(output_file)
@@ -49,24 +62,31 @@ def clear_document():
     status_label.config(text="Document cleared")
 
 
-# main window-this is the main application window
+# window
 root = tk.Tk()
 root.title("Reversible Tokenization Tool")
-root.geometry("950x600")  # widthx height
+root.geometry("700x450")  # widthx height
+root.configure(bg="#f2f2f2")
 
 
-# main frame
-
-main_frame = tk.Frame(root, bg="#f2f2f2", padx=20, pady=20)
-main_frame.pack(fill="both", expand=True)
+# title
 
 title_label = tk.Label(
-    main_frame,
+    root,
     text="Private AI application",
     font=("Arial", 14, "bold"),
     bg="#f2f2f2"
 )
 title_label.pack(pady=10)
+
+# main frame
+
+main_frame = tk.Frame(root, bg="#f2f2f2", padx=20, pady=20)
+main_frame.pack(fill="both", expand=True)
+button_width = 30
+
+# Select file
+
 select_button = tk.Button(
     main_frame,
     text="Select File",
@@ -75,47 +95,69 @@ select_button = tk.Button(
 )
 select_button.pack(pady=5)
 
+# filepath label
+
 file_label = tk.Label(
     main_frame,
-    text="Path of the selected file",
-    relief="sunken"
+    text="<Path of the selected file>",
+    width=40,
+    relief="sunken",
+    bg="white"
 )
 file_label.pack(pady=5)
+
+
+# Protect PII button
 
 protect_button = tk.Button(
     main_frame,
     text="Protect Personal Information",
-    width=25,
+    width=button_width,
     command=protect_info
 )
-protect_button.pack(pady=10)
+protect_button.pack(pady=8)
 
+# Tokenize button
 
 tokenize_button = tk.Button(
     main_frame,
     text="Tokenize",
-    width=25,
+    width=button_width,
     command=run_tokenize
 )
 tokenize_button.pack(pady=5)
 
+# Detokenize button
+
+detokenize_button = tk.Button(
+    main_frame,
+    text="Detokenize",
+    width=button_width,
+    command=run_detokenize
+)
+detokenize_button.pack(pady=5)
+
+
+# Ask AI button
 
 ask_ai_button = tk.Button(
     main_frame,
     text="Ask AI",
-    width=25,
+    width=button_width,
     command=ask_ai
 )
 ask_ai_button.pack(pady=5)
 
-
+# Clear button
 clear_button = tk.Button(
     main_frame,
     text="Clear",
-    width=25,
+    width=button_width,
     command=clear_document
 )
 clear_button.pack(pady=5)
+
+# Status Bar
 
 status_label = tk.Label(
     main_frame,
@@ -124,7 +166,7 @@ status_label = tk.Label(
     anchor="w"
 )
 
-status_label.pack(side="bottom", fill="x", pady=20)
+status_label.pack(side="bottom", fill="x", pady=10)
 
 
 root.mainloop()
