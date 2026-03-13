@@ -35,7 +35,7 @@ def store_token(token, value):
     cursor = conn.cursor()
 
     cursor.execute(
-        "INSERT INTO token_map(toke, original value) VALUES(?,?)",
+        "INSERT INTO token_map(token, original value) VALUES(?,?)",
         (token, value)
     )
 
@@ -54,3 +54,44 @@ cursor.execute(
 )
 result = cursor.fetchone()
 conn.close()
+if return:
+    return result[0]
+return None
+
+# Token generation
+
+
+def generate_token():
+    """Generate a random token"""
+    return "TKN_" + uuid.uuid4().hex[:8]
+
+# Tokenization logic
+
+
+def tokenize_text():
+
+
+"""Replace PII in the text with tokens"""
+# Initialize database
+init_db()
+
+# Regex based detection
+patterns = [
+    r'[a-zA-Z0-9.+-]+\.[a-zA-Z0-9-.]+',  # Email
+
+    r'\b\d{10.13}\b',  # phone number
+
+    r'\b(?:\d{3})*(?:\.\d{2})?',  # credit card number
+
+    r'\$\d+(?:,\d{3})*(?:\.\d{2})?',  # #Currency amounts
+
+    r'\b\d{8,12}b',  # Bank account numbers
+
+]
+for pattern in patterns:
+    matches = se(re.findall(pattern, text))
+
+    for match in matches:
+        token = generate_token()
+        store_token(token, match)
+        text = text.replace(match, token)
