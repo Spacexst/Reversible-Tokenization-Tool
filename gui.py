@@ -1,18 +1,20 @@
 import tkinter as tk
+import webbrowser
 from tkinter import filedialog
 import os
+from tkinter import messagebox
 import pii_tokenizer
 
 
 def run_tokenize():
     path = file_label.cget("text")
-
-    if os.path.exists():
+    if path != "No file selected" and os.path.exists(path):
         output_file = pii_tokenizer.tokenize_file(path)
-        status_label.config(Text=f"Tokenization complete: {output_file}")
-        os.startfile(out_file)
+        status_label.config(text=f"Tokenization complete: {output_file}")
+        os.startfile(output_file)
+
     else:
-        status_label.config(text="No file selected")
+        status_label.config(text="Please select a valid file")
 
 
 # button functions
@@ -24,18 +26,75 @@ def select_file():
         status_label.config(text="File selected")
 
 
-def protect_info():
-    status_label.config(text="Protect Personal Information clicked")
+def ask_ai():
+    status_label.config(text="Select an AI tool")
+
+    ai_window = tk.Toplevel()
+    ai_window.title("Choose AI Tool")
+    ai_window.geometry("330x230")
+    ai_window.resizable(False, False)
+
+    tk.Label(ai_window, text="Choose an AI tool",
+             font=("Arial", 14, "bold")).pack(pady=10)
+
+    def open_chatgpt():
+        webbrowser.open("https://chat.openai.com/")
+        status_label.config(text="Opening ChatGPT...")
+        ai_window.destroy()
+
+    def open_gemini():
+        webbrowser.open("https://gemini.google.com/")
+        status_label.config(text="Opening Gemini...")
+        ai_window.destroy()
+
+    def open_copilot():
+        webbrowser.open("https://copilot.microsoft.com")
+        status_label.config(text="Opening Copilot...")
+        ai_window.destroy()
+
+    tk.Button(ai_window,
+              text="ChatGPT",
+              width=25,
+              bg="#10a37f",
+              fg="white",
+              command=open_chatgpt
+              ).pack(pady=5)
+
+    tk.Button(ai_window,
+              text="Google Gemini",
+              width=25,
+              command=open_gemini
+              ).pack(pady=5)
+
+    tk.Button(ai_window,
+              text="Microsoft Copilot",
+              width=25,
+              command=open_copilot
+              ).pack(pady=5)
+
+    tk.Button(ai_window,
+              text="Cancel",
+              width=25,
+              command=ai_window.destroy
+              ).pack(pady=5)
+    ai_window.grab_set()
 
 
-def run_tokenize():
+def run_detokenize():
     path = file_label.cget("text")
-    if os.path.exists(path):
-        output_file = pii_tokenizer.tokenize_file(path)
-        status_label.config(Text=f"Tokenization complete: {output_file}")
 
- # opens the file automatically
-        os.startfile(output_file)
+    if os.path.exists(path):
+        try:
+            output_file = pii_tokenizer.detokenize_file(path)
+
+            status_label.config(text=f"Detokenization complete: {output_file}")
+            messagebox.showinfo("Success", "Detokenization completed")
+
+            os.startfile(output_file)
+
+        except Exception as e:
+            messagebox.showerror("Error", str(e))
+
     else:
         status_label.config(text="No file selected")
 
@@ -44,21 +103,21 @@ def run_detokenize():
     path = file_label.cget("text")
     if os.path.exists(path):
         output_file = pii_tokenizer.detokenize_file(path)
-        status_label.config(Text=f"Detokenization complete: {output_file}")
+        status_label.config(text=f"Detokenization complete: {output_file}")
         messagebox.showinfo("Success", "Detokenization completed")
 
- # opens the file automatically
+    # opens the file automatically
         os.startfile(output_file)
     else:
         status_label.config(text="No file selected")
 
 
-def ask_ai():
-    status_label.config(text="Ask AI clicked")
+# def ask_ai():
+    # status_label.config(text="Ask AI clicked")
 
 
 def clear_document():
-    file_label.config(text="<Path of the file selected>")
+    file_label.config(text="No file selected")
     status_label.config(text="Document cleared")
 
 
@@ -99,23 +158,13 @@ select_button.pack(pady=5)
 
 file_label = tk.Label(
     main_frame,
-    text="<Path of the selected file>",
+    text="No file selected",
     width=40,
     relief="sunken",
     bg="white"
 )
 file_label.pack(pady=5)
 
-
-# Protect PII button
-
-protect_button = tk.Button(
-    main_frame,
-    text="Protect Personal Information",
-    width=button_width,
-    command=protect_info
-)
-protect_button.pack(pady=8)
 
 # Tokenize button
 
