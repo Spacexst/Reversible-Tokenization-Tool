@@ -34,7 +34,7 @@ def ask_ai():
     ai_window.geometry("330x230")
     ai_window.resizable(False, False)
 
-    tk.Label(ai_window, text="Choose an AI tool",
+    tk.Label(ai_window, text="Choose an AI tool", bg="light green",
              font=("Arial", 14, "bold")).pack(pady=10)
 
     def open_chatgpt():
@@ -55,8 +55,6 @@ def ask_ai():
     tk.Button(ai_window,
               text="ChatGPT",
               width=25,
-              bg="#10a37f",
-              fg="white",
               command=open_chatgpt
               ).pack(pady=5)
 
@@ -163,7 +161,7 @@ file_label = tk.Label(
     relief="sunken",
     bg="white"
 )
-file_label.pack(pady=5)
+file_label.pack(pady=15)
 
 
 # Tokenize button
@@ -174,7 +172,18 @@ tokenize_button = tk.Button(
     width=button_width,
     command=run_tokenize
 )
-tokenize_button.pack(pady=5)
+tokenize_button.pack(pady=15)
+
+
+ask_ai_button = tk.Button(
+    main_frame,
+    text="Ask AI",
+    width=button_width,
+    command=ask_ai
+)
+
+# Ask AI button
+ask_ai_button.pack(pady=15)
 
 # Detokenize button
 
@@ -184,18 +193,8 @@ detokenize_button = tk.Button(
     width=button_width,
     command=run_detokenize
 )
-detokenize_button.pack(pady=5)
+detokenize_button.pack(pady=15)
 
-
-# Ask AI button
-
-ask_ai_button = tk.Button(
-    main_frame,
-    text="Ask AI",
-    width=button_width,
-    command=ask_ai
-)
-ask_ai_button.pack(pady=5)
 
 # Clear button
 clear_button = tk.Button(
