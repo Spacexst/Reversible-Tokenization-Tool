@@ -23,9 +23,21 @@ def init_db():
     conn.close()
 
 
-# -----------------------------
+def token_exists(token):
+    conn = sqlite3.connect(DB_FILE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT 1 FROM tokens WHERE token=?",
+        (token,))
+    result = cursor.fetchone()
+
+    conn.close()
+    return result is not None
+
+
 # Store token + encrypted value
-# -----------------------------
+
 def store_token(token, original_value):
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
@@ -41,9 +53,8 @@ def store_token(token, original_value):
     conn.close()
 
 
-# -----------------------------
 # Retrieve original value
-# -----------------------------
+
 def get_original(token):
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
@@ -60,9 +71,8 @@ def get_original(token):
     return None
 
 
-# -----------------------------
 # (Optional) Get all tokens (for GUI)
-# -----------------------------
+
 def get_all_tokens():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()

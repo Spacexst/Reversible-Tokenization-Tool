@@ -4,26 +4,33 @@ import os
 import uuid
 import db
 import spacy
+import secrets
+import time
 
-# Load spaCy model (once)
+# Load spaCy model(once)
 nlp = spacy.load("en_core_web_sm")
 
 
-# -----------------------------
 # Generate token
-# -----------------------------
 def generate_token():
-    return "TKN_" + uuid.uuid4().hex[:8]
+
+    while True:
+        timestamp = str(int(time.time()))[-4:]  # last 4 digits
+        random_part = secrets.token_hex(4)  # specifies the hex characters
+
+        token = f"TKN_{random_part}_{timestamp}"
+
+        if not db.token_exists(token):
+            return token
 
 
-# -----------------------------
 # Tokenization Logic
-# -----------------------------
+
 def tokenize_text(text):
 
     db.init_db()
 
-    # Regex patterns (non-name PII)
+# Regex patterns (non-name PII)
     patterns = [
         r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+',  # email
         r'\b\d{10}\b',                                     # phone
@@ -33,9 +40,8 @@ def tokenize_text(text):
 
     processed = {}
 
-    # -----------------------------
     # Step 1: Regex tokenization
-    # -----------------------------
+
     for pattern in patterns:
         matches = re.findall(pattern, text)
 
@@ -96,7 +102,7 @@ def tokenize_file(file_path):
 # -----------------------------
 def detokenize_text(text):
 
-    tokens = re.findall(r'TKN_[a-f0-9]{8}', text)
+    tokens = re.findall(r'TKN_[a-f0-9]{8}\d{4}', text)
 
     for token in tokens:
         original = db.get_original(token)

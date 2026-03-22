@@ -31,7 +31,7 @@ def ask_ai():
 
     ai_window = tk.Toplevel()
     ai_window.title("Choose AI Tool")
-    ai_window.geometry("330x230")
+    ai_window.geometry("400x330")
     ai_window.resizable(False, False)
 
     tk.Label(ai_window, text="Choose an AI tool", bg="white",
@@ -48,6 +48,11 @@ def ask_ai():
 
     def open_gemini():
         webbrowser.open("https://gemini.google.com/")
+        status_label.config(text="Opening Gemini...")
+        ai_window.destroy()
+
+    def open_copilot():
+        webbrowser.open("https://copilot.microsoft.com/")
         status_label.config(text="Opening Gemini...")
         ai_window.destroy()
 
