@@ -1,15 +1,14 @@
 from cryptography.fernet import Fernet, InvalidToken
 import os
 
-# -----------------------------
+
 # Key File Location
-# -----------------------------
+
 KEY_FILE = "secret.key"
 
 
-# -----------------------------
 # Generate Encryption Key
-# -----------------------------
+
 def generate_key():
     """
     Generates a new encryption key and saves it to file
@@ -22,9 +21,8 @@ def generate_key():
     return key
 
 
-# -----------------------------
 # Load Encryption Key
-# -----------------------------
+
 def load_key():
     """
     Loads encryption key from file.
@@ -46,9 +44,7 @@ def load_key():
     return key
 
 
-# -----------------------------
 # Initialize Cipher
-# -----------------------------
 try:
     key = load_key()
     cipher = Fernet(key)
@@ -56,9 +52,8 @@ except Exception as e:
     raise RuntimeError(f"Encryption system failed to initialize: {e}")
 
 
-# -----------------------------
 # Encrypt Data
-# -----------------------------
+
 def encrypt_data(data):
     """
     Encrypts sensitive data before storing in database
@@ -77,9 +72,8 @@ def encrypt_data(data):
         raise RuntimeError(f"Encryption failed: {e}")
 
 
-# -----------------------------
 # Decrypt Data
-# -----------------------------
+
 def decrypt_data(encrypted_data):
     """
     Decrypts stored data when detokenizing

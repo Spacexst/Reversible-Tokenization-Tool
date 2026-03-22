@@ -3,6 +3,10 @@ import re
 import os
 import uuid
 import db
+import spacy
+
+# Load spaCy model (once)
+nlp = spacy.load("en_core_web_sm")
 
 
 # -----------------------------
@@ -19,23 +23,51 @@ def tokenize_text(text):
 
     db.init_db()
 
+    # Regex patterns (non-name PII)
     patterns = [
         r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+',  # email
         r'\b\d{10}\b',                                     # phone
         r'\b\d{4}-\d{4}-\d{4}-\d{4}\b',                     # credit card
-        r'\$\d+(?:\.\d{2})?',                               # financial
+        r'\$\d+(?:\.\d{2})?'                               # money
     ]
 
+    processed = {}
+
+    # -----------------------------
+    # Step 1: Regex tokenization
+    # -----------------------------
     for pattern in patterns:
         matches = re.findall(pattern, text)
 
         for match in matches:
-            token = generate_token()
+            if match in processed:
+                token = processed[match]
+            else:
+                token = generate_token()
+                processed[match] = token
+                db.store_token(token, match)
 
-            db.store_token(token, match)
-
-            # safer replacement
             text = re.sub(re.escape(match), token, text)
+
+    # -----------------------------
+    # Step 2: spaCy NER (Names)
+    # -----------------------------
+    doc = nlp(text)
+
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+
+            name = ent.text
+
+            if name in processed:
+                token = processed[name]
+            else:
+                token = generate_token()
+                processed[name] = token
+                db.store_token(token, name)
+
+            # Replace full name safely
+            text = text.replace(name, token)
 
     return text
 

@@ -1,9 +1,18 @@
 import tkinter as tk
-import webbrowser
 from tkinter import filedialog
 import os
 from tkinter import messagebox
 import pii_tokenizer
+import webbrowser
+
+
+# button functions
+
+def select_file():
+    path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+    if path:
+        file_label.config(text=path)
+        status_label.config(text="File selected")
 
 
 def run_tokenize():
@@ -17,15 +26,6 @@ def run_tokenize():
         status_label.config(text="Please select a valid file")
 
 
-# button functions
-
-def select_file():
-    path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
-    if path:
-        file_label.config(text=path)
-        status_label.config(text="File selected")
-
-
 def ask_ai():
     status_label.config(text="Select an AI tool")
 
@@ -34,8 +34,12 @@ def ask_ai():
     ai_window.geometry("330x230")
     ai_window.resizable(False, False)
 
-    tk.Label(ai_window, text="Choose an AI tool", bg="light green",
-             font=("Arial", 14, "bold")).pack(pady=10)
+    tk.Label(ai_window, text="Choose an AI tool", bg="white",
+             highlightbackground="gray",
+             highlightthickness=1,
+             relief="solid",
+             bd=1,
+             font=("Arial", 14, "bold")).pack(padx=20, fill="x", pady=10)
 
     def open_chatgpt():
         webbrowser.open("https://chat.openai.com/")
@@ -47,14 +51,11 @@ def ask_ai():
         status_label.config(text="Opening Gemini...")
         ai_window.destroy()
 
-    def open_copilot():
-        webbrowser.open("https://copilot.microsoft.com")
-        status_label.config(text="Opening Copilot...")
-        ai_window.destroy()
-
+   # ask ai window has its own buttons
     tk.Button(ai_window,
               text="ChatGPT",
               width=25,
+              bg="#10a37f",
               command=open_chatgpt
               ).pack(pady=5)
 
@@ -97,23 +98,6 @@ def run_detokenize():
         status_label.config(text="No file selected")
 
 
-def run_detokenize():
-    path = file_label.cget("text")
-    if os.path.exists(path):
-        output_file = pii_tokenizer.detokenize_file(path)
-        status_label.config(text=f"Detokenization complete: {output_file}")
-        messagebox.showinfo("Success", "Detokenization completed")
-
-    # opens the file automatically
-        os.startfile(output_file)
-    else:
-        status_label.config(text="No file selected")
-
-
-# def ask_ai():
-    # status_label.config(text="Ask AI clicked")
-
-
 def clear_document():
     file_label.config(text="No file selected")
     status_label.config(text="Document cleared")
@@ -127,7 +111,6 @@ root.configure(bg="#f2f2f2")
 
 
 # title
-
 title_label = tk.Label(
     root,
     text="Private AI application",
@@ -137,13 +120,11 @@ title_label = tk.Label(
 title_label.pack(pady=10)
 
 # main frame
-
 main_frame = tk.Frame(root, bg="#f2f2f2", padx=20, pady=20)
 main_frame.pack(fill="both", expand=True)
 button_width = 30
 
 # Select file
-
 select_button = tk.Button(
     main_frame,
     text="Select File",
@@ -153,11 +134,10 @@ select_button = tk.Button(
 select_button.pack(pady=5)
 
 # filepath label
-
 file_label = tk.Label(
     main_frame,
     text="No file selected",
-    width=40,
+    width=50,
     relief="sunken",
     bg="white"
 )
@@ -165,7 +145,6 @@ file_label.pack(pady=15)
 
 
 # Tokenize button
-
 tokenize_button = tk.Button(
     main_frame,
     text="Tokenize",
@@ -174,19 +153,16 @@ tokenize_button = tk.Button(
 )
 tokenize_button.pack(pady=15)
 
-
+# Ask AI button
 ask_ai_button = tk.Button(
     main_frame,
     text="Ask AI",
     width=button_width,
     command=ask_ai
 )
-
-# Ask AI button
 ask_ai_button.pack(pady=15)
 
 # Detokenize button
-
 detokenize_button = tk.Button(
     main_frame,
     text="Detokenize",
@@ -206,7 +182,6 @@ clear_button = tk.Button(
 clear_button.pack(pady=5)
 
 # Status Bar
-
 status_label = tk.Label(
     main_frame,
     text="Status Bar",
