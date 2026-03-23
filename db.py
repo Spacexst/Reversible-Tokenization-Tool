@@ -1,26 +1,26 @@
-# db.py
 import sqlite3
 from encryption_utils import encrypt_data, decrypt_data
+from audit_logger import log_action
 
 DB_FILE = "token_map.db"
 
-
-# -----------------------------
 # Database Initialization
-# -----------------------------
+
+
 def init_db():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-
+# Token table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tokens (
+        CREATE TABLE IF NOT EXISTS tokens(
             token TEXT PRIMARY KEY,
-            value BLOB
-        )
+            value BLOB NOT NULL)
     """)
 
     conn.commit()
     conn.close()
+
+# Check if token exists
 
 
 def token_exists(token):
@@ -30,13 +30,14 @@ def token_exists(token):
     cursor.execute(
         "SELECT 1 FROM tokens WHERE token=?",
         (token,))
+
     result = cursor.fetchone()
 
     conn.close()
     return result is not None
 
-
 # Store token + encrypted value
+
 
 def store_token(token, original_value):
     conn = sqlite3.connect(DB_FILE)
@@ -51,9 +52,11 @@ def store_token(token, original_value):
 
     conn.commit()
     conn.close()
-
+# log action
+    log_action(token, "TOKENIZE")
 
 # Retrieve original value
+
 
 def get_original(token):
     conn = sqlite3.connect(DB_FILE)
@@ -66,12 +69,17 @@ def get_original(token):
 
     if result:
         encrypted_value = result[0]
-        return decrypt_data(encrypted_value)
+        original_value = decrypt_data(encrypted_value)
 
-    return None
+        # log to file
+        log_action(token, "Detokenize")
 
+        return original_value
+
+    return none
 
 # (Optional) Get all tokens (for GUI)
+
 
 def get_all_tokens():
     conn = sqlite3.connect(DB_FILE)
