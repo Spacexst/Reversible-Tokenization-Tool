@@ -9,3 +9,9 @@ logging.basicConfig(
 
 def log_action(token, action):
     logging.info(f"{action} - Token: {token}")
+
+
+def clear_audit_file():
+    with open("audit.log", "w") as f:
+        pass
+    print("Audit log file cleared!")

@@ -1,46 +1,55 @@
+# db.py
 import sqlite3
 from encryption_utils import encrypt_data, decrypt_data
 from audit_logger import log_action
 
 DB_FILE = "token_map.db"
 
-# Database Initialization
 
+# Get DB Connection (with FK enabled)
 
-def init_db():
+def get_connection():
     conn = sqlite3.connect(DB_FILE)
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+
+# Database Initialization
+def init_db():
+    conn = get_connection()
     cursor = conn.cursor()
-# Token table
+
+    # Token storage table
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS tokens(
+        CREATE TABLE IF NOT EXISTS tokens (
             token TEXT PRIMARY KEY,
-            value BLOB NOT NULL)
+            value BLOB NOT NULL,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
     """)
+
+    # Audit log table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS audit_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            token TEXT NOT NULL,
+            action TEXT NOT NULL,
+            timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (token) REFERENCES tokens(token)
+        )
+    """)
+
+    # Index for performance
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_token ON tokens(token)")
 
     conn.commit()
     conn.close()
 
-# Check if token exists
-
-
-def token_exists(token):
-    conn = sqlite3.connect(DB_FILE)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "SELECT 1 FROM tokens WHERE token=?",
-        (token,))
-
-    result = cursor.fetchone()
-
-    conn.close()
-    return result is not None
 
 # Store token + encrypted value
 
-
 def store_token(token, original_value):
-    conn = sqlite3.connect(DB_FILE)
+    conn = get_connection()
     cursor = conn.cursor()
 
     encrypted_value = encrypt_data(original_value)
@@ -50,39 +59,63 @@ def store_token(token, original_value):
         (token, encrypted_value)
     )
 
+    # Audit log in DB
+    cursor.execute(
+        "INSERT INTO audit_log (token, action) VALUES (?, ?)",
+        (token, "TOKENIZE")
+    )
+
     conn.commit()
     conn.close()
-# log action
+
+    # Also log to file/console
     log_action(token, "TOKENIZE")
+
 
 # Retrieve original value
 
-
 def get_original(token):
-    conn = sqlite3.connect(DB_FILE)
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT value FROM tokens WHERE token=?", (token,))
     result = cursor.fetchone()
 
+    if not result:
+        conn.close()
+        return None
+
+    encrypted_value = result[0]
+    original_value = decrypt_data(encrypted_value)
+
+    # Audit log in DB
+    cursor.execute(
+        "INSERT INTO audit_log (token, action) VALUES (?, ?)",
+        (token, "DETOKENIZE")
+    )
+    conn.commit()
     conn.close()
 
-    if result:
-        encrypted_value = result[0]
-        original_value = decrypt_data(encrypted_value)
+    # Also log to file/console
+    log_action(token, "DETOKENIZE")
 
-        # log to file
-        log_action(token, "Detokenize")
-
-        return original_value
-
-    return none
-
-# (Optional) Get all tokens (for GUI)
+    return original_value
 
 
-def get_all_tokens():
-    conn = sqlite3.connect(DB_FILE)
+# Mask data (for safe display)
+
+
+def mask_data(data):
+    data = str(data)
+    if len(data) <= 4:
+        return "****"
+    return data[:2] + "****" + data[-2:]
+
+
+# Get all tokens (with optional masking)
+
+def get_all_tokens(mask=True):
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT token, value FROM tokens")
@@ -90,5 +123,29 @@ def get_all_tokens():
 
     conn.close()
 
-    # decrypt values before returning
-    return [(t, decrypt_data(v)) for t, v in rows]
+    results = []
+    for token, value in rows:
+        original = decrypt_data(value)
+        if mask:
+            original = mask_data(original)
+        results.append((token, original))
+
+    return results
+
+
+# Get audit logs
+
+def get_audit_logs():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, token, action, timestamp
+        FROM audit_log
+        ORDER BY timestamp DESC
+    """)
+
+    logs = cursor.fetchall()
+    conn.close()
+
+    return logs
