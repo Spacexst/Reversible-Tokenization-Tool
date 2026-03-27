@@ -20,6 +20,8 @@ def run_tokenize():
     if path != "No file selected" and os.path.exists(path):
         output_file = pii_tokenizer.tokenize_file(path)
         status_label.config(text=f"Tokenization complete: {output_file}")
+        messagebox.showinfo("Success", "Tokenization completed")
+
         os.startfile(output_file)
 
     else:
@@ -32,7 +34,7 @@ def ask_ai():
     ai_window = tk.Toplevel()
     ai_window.title("Choose AI Tool")
     ai_window.geometry("400x330")
-    ai_window.resizable(False, False)
+    ai_window.resizable(True, True)
 
     tk.Label(ai_window, text="Choose an AI tool", bg="white",
              highlightbackground="gray",
@@ -56,6 +58,11 @@ def ask_ai():
         status_label.config(text="Opening Gemini...")
         ai_window.destroy()
 
+    def open_ai_tool(url, name):
+        webbrowser.open(url)
+        status_label.config(text=f"Opening {name}...")
+        ai_window.destroy()
+
    # ask ai window has its own buttons
     tk.Button(ai_window,
               text="ChatGPT",
@@ -75,6 +82,15 @@ def ask_ai():
               width=25,
               command=open_copilot
               ).pack(pady=5)
+
+    tk.Button(ai_window,
+              text="Grok",
+              width=25,
+              command=lambda: open_ai_tool("https://grok.com/", "Grok")).pack(pady=5)
+    tk.Button(ai_window,
+              width=25,
+              text="Claude",
+              command=lambda: open_ai_tool("https://claude.ai/", "Claude")).pack(pady=5)
 
     tk.Button(ai_window,
               text="Cancel",
@@ -111,6 +127,7 @@ def clear_document():
 # window
 root = tk.Tk()
 root.title("Reversible Tokenization Tool")
+
 root.geometry("700x450")  # widthx height
 root.configure(bg="#f2f2f2")
 

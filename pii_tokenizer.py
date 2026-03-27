@@ -2,8 +2,10 @@
 import re
 import os
 import uuid
-import db
 import spacy
+
+import db
+
 
 # Load spaCy model (once)
 nlp = spacy.load("en_core_web_sm")
@@ -96,6 +98,7 @@ def detokenize_text(text):
         original = db.get_original(token)
 
         if original:
+
             text = text.replace(token, original)
 
     return text

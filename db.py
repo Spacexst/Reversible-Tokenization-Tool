@@ -47,15 +47,20 @@ def init_db():
 
 
 # Store token + encrypted value
-
 def store_token(token, original_value):
+    """
+    Stores a token and its encrypted original value in the database.
+    If the token already exists, its value is updated.
+    Also logs the tokenization action in the audit log.
+    """
+
     conn = get_connection()
     cursor = conn.cursor()
 
     encrypted_value = encrypt_data(original_value)
-
     cursor.execute(
-        "INSERT OR REPLACE INTO tokens (token, value) VALUES (?, ?)",
+        "INSERT INTO tokens (token, value) VALUES (?, ?) "
+        "ON CONFLICT(token) DO UPDATE SET value=excluded.value",
         (token, encrypted_value)
     )
 

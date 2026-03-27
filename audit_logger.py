@@ -1,4 +1,12 @@
 import logging
+import os
+
+
+# Get parent directory of this file
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+PARENT_DIR = os.path.dirname(CURRENT_DIR)
+
+LOG_PATH = os.path.join(PARENT_DIR, "audit.log")
 
 logging.basicConfig(
     filename="audit.log",
