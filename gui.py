@@ -68,33 +68,39 @@ def ask_ai():
               text="ChatGPT",
               width=25,
               bg="#10a37f",
+              font=("Arial", 11),
               command=open_chatgpt
               ).pack(pady=5)
 
     tk.Button(ai_window,
               text="Google Gemini",
               width=25,
+              font=("Arial", 11),
               command=open_gemini
               ).pack(pady=5)
 
     tk.Button(ai_window,
               text="Microsoft Copilot",
               width=25,
+              font=("Arial", 11),
               command=open_copilot
               ).pack(pady=5)
 
     tk.Button(ai_window,
               text="Grok",
               width=25,
+              font=("Arial", 11),
               command=lambda: open_ai_tool("https://grok.com/", "Grok")).pack(pady=5)
     tk.Button(ai_window,
               width=25,
+              font=("Arial", 11),
               text="Claude",
               command=lambda: open_ai_tool("https://claude.ai/", "Claude")).pack(pady=5)
 
     tk.Button(ai_window,
               text="Cancel",
               width=25,
+              font=("Arial", 11),
               command=ai_window.destroy
               ).pack(pady=5)
     ai_window.grab_set()
@@ -136,7 +142,7 @@ root.configure(bg="#f2f2f2")
 title_label = tk.Label(
     root,
     text="Private AI application",
-    font=("Arial", 14, "bold"),
+    font=("Arial", 18, "bold"),
     bg="#f2f2f2"
 )
 title_label.pack(pady=10)
@@ -145,12 +151,14 @@ title_label.pack(pady=10)
 main_frame = tk.Frame(root, bg="#f2f2f2", padx=20, pady=20)
 main_frame.pack(fill="both", expand=True)
 button_width = 30
+button_font = ("Arial", 11)
 
 # Select file
 select_button = tk.Button(
     main_frame,
     text="Select File",
     width=25,
+    font=button_font,
     command=select_file
 )
 select_button.pack(pady=5)
@@ -160,6 +168,7 @@ file_label = tk.Label(
     main_frame,
     text="No file selected",
     width=50,
+    font=button_font,
     relief="sunken",
     bg="white"
 )
@@ -171,6 +180,7 @@ tokenize_button = tk.Button(
     main_frame,
     text="Tokenize",
     width=button_width,
+    font=button_font,
     command=run_tokenize
 )
 tokenize_button.pack(pady=15)
@@ -180,6 +190,7 @@ ask_ai_button = tk.Button(
     main_frame,
     text="Ask AI",
     width=button_width,
+    font=button_font,
     command=ask_ai
 )
 ask_ai_button.pack(pady=15)
@@ -189,6 +200,7 @@ detokenize_button = tk.Button(
     main_frame,
     text="Detokenize",
     width=button_width,
+    font=button_font,
     command=run_detokenize
 )
 detokenize_button.pack(pady=15)
@@ -199,6 +211,7 @@ clear_button = tk.Button(
     main_frame,
     text="Clear",
     width=button_width,
+    font=button_font,
     command=clear_document
 )
 clear_button.pack(pady=5)
@@ -207,6 +220,7 @@ clear_button.pack(pady=5)
 status_label = tk.Label(
     main_frame,
     text="Status Bar",
+    font=button_font,
     relief="sunken",
     anchor="w"
 )
