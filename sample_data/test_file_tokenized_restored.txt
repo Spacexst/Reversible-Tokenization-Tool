@@ -1,0 +1,3 @@
+John Doe lives at 123 Main Street.
+His email is john.doe@example.com.
+His phone number is 5551234567.

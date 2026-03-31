@@ -20,7 +20,7 @@ def run_tokenize():
     if path != "No file selected" and os.path.exists(path):
         output_file = pii_tokenizer.tokenize_file(path)
         status_label.config(text=f"Tokenization complete: {output_file}")
-        messagebox.showinfo("Success", "Tokenization completed")
+        messagebox.showinfo("Success", "Your sensitive info is protected")
 
         os.startfile(output_file)
 
@@ -114,7 +114,7 @@ def run_detokenize():
             output_file = pii_tokenizer.detokenize_file(path)
 
             status_label.config(text=f"Detokenization complete: {output_file}")
-            messagebox.showinfo("Success", "Detokenization completed")
+            messagebox.showinfo("Success", "Your original data is restored")
 
             os.startfile(output_file)
 
@@ -178,7 +178,7 @@ file_label.pack(pady=15)
 # Tokenize button
 tokenize_button = tk.Button(
     main_frame,
-    text="Tokenize",
+    text="Protect Data",
     width=button_width,
     font=button_font,
     command=run_tokenize
@@ -198,7 +198,7 @@ ask_ai_button.pack(pady=15)
 # Detokenize button
 detokenize_button = tk.Button(
     main_frame,
-    text="Detokenize",
+    text="Restore Data",
     width=button_width,
     font=button_font,
     command=run_detokenize
