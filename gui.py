@@ -230,7 +230,6 @@ class AdminWindow(tk.Toplevel):
                 font=("Arial", 12)
             ).pack(pady=10)
             return
-
         for log_id, token, action, timestamp in logs:
             tk.Label(
                 scroll_frame,
