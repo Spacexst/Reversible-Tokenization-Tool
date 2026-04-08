@@ -9,7 +9,7 @@ import datetime
 import webbrowser
 import os
 from tkinter import filedialog, messagebox, simpledialog
-aimport tkinter as tk
+import tkinter as tk
 
 
 # USER DATABASE + LOGGER
@@ -254,8 +254,13 @@ def launch_main_app(username, role):
     root.username = username
     root.role = role
 
-    # BUTTON FUNCTIONS
+    # LOGOUT FUNCTION
+    def logout():
+        root.destroy()
+        messagebox.showinfo("Logout", "Logged out successfully")
+        LoginWindow().mainloop()
 
+    # FILE FUNCTION
     def select_file():
         path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
         if path:
@@ -359,6 +364,10 @@ def launch_main_app(username, role):
     title_label = tk.Label(root, text="Private AI application",
                            font=("Arial", 18, "bold"), bg="#f2f2f2")
     title_label.pack(pady=10)
+
+    tk.Button(root, text="Logout",
+              bg="blue", fg="white",
+              command=logout).place(x=620, y=10)
 
     main_frame = tk.Frame(root, bg="#f2f2f2", padx=20, pady=20)
     main_frame.pack(fill="both", expand=True)
