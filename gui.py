@@ -1,17 +1,16 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog
-import os
-import webbrowser
-import datetime
-import pii_tokenizer
-
-
 from db import (
     get_all_tokens,
     get_audit_logs,
 
     get_original
 )
+import pii_tokenizer
+import datetime
+import webbrowser
+import os
+from tkinter import filedialog, messagebox, simpledialog
+aimport tkinter as tk
+
 
 # USER DATABASE + LOGGER
 USERS = {
