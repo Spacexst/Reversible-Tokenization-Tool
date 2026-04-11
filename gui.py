@@ -365,8 +365,9 @@ def launch_main_app(username, role):
     title_label.pack(pady=10)
 
     tk.Button(root, text="Logout",
-              bg="blue", fg="white",
-              command=logout).place(x=620, y=10)
+              bg="navy blue", fg="white",
+              command=logout).place(relx=1.0, x=-30, y=20, anchor="ne")
+    # (x=720, y=20, anchor="")
 
     main_frame = tk.Frame(root, bg="#f2f2f2", padx=20, pady=20)
     main_frame.pack(fill="both", expand=True)
