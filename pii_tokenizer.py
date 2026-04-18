@@ -28,7 +28,8 @@ def tokenize_text(text):
         r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+',  # email
         r'\b\d{10}\b',                                     # phone
         r'\b\d{4}-\d{4}-\d{4}-\d{4}\b',                     # credit card
-        r'\$\d+(?:\.\d{2})?'                               # money
+        r'\$\d[\d,]*(?:\.\d{2})?'                            # money
+
     ]
 
     processed = {}
