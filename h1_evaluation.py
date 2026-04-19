@@ -4,7 +4,7 @@ import db
 
 nlp = spacy.load("en_core_web_sm")
 
-# Regex patterns matching your tokenizer
+
 PII_PATTERNS = [
     r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+',  # email
     r'\b\d{10}\b',                                     # phone number
