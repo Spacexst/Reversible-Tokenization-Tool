@@ -98,6 +98,10 @@ Flowchart
   Reversible Tokenization Tool-AI
   Developed for Academic Research 
 
+## Citation
+  This project is archived in zenodo:
+   https://doi.org/10.5281/zenodo.19881601
+
 
 
 
