@@ -111,11 +111,13 @@ Close and reopen the program
 7.	Contact and Support
 For bug reports, feature requests or support contact the development team or visit repository.
 
-
-
-
-
-
+## Use cases
+-Protecting sensitive data (email id, phone number, credit card numbers)
+-Health care data anonymization
+-Financial data, for e.g. banks
+-Secure data sharing and analysis
+-Research requiring reversible anonymization
+-Proecting data while interacting with AI systems
 
 
 ## OVERVIEW
